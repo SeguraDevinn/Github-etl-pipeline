@@ -28,7 +28,7 @@ def _get_headers() -> Dict[str, str]:
 # API Call
 # -------------------------
 
-def fetch_issues(state: str = "all") -> List[Dict]:
+def fetch_issues(state: str = "all", max_pages=10) -> List[Dict]:
     """
     Fetch all issues for a GitHub repository using pagination.
 
@@ -51,6 +51,11 @@ def fetch_issues(state: str = "all") -> List[Dict]:
     url = f"{Config.GITHUB_API_BASE_URL}/repos/{Config.REPO_OWNER}/{Config.REPO_NAME}/issues"
 
     while True:
+        
+        if page > max_pages:
+            logger.info(f"Reached max pages: {max_pages}. Fetching stopped.")
+            break
+
         logger.info("Fetching page %s", page)
 
         response = requests.get(

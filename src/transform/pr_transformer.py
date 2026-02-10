@@ -17,7 +17,7 @@ def transform_prs(raw_records:List[Dict]) -> List[Dict]:
     Transform raw GitHub issue records into normalized pull request records.
     """
 
-    logger.info("Starting pr transformation for 5s records", len(raw_records))
+    logger.info("Starting pr transformation for %s records", len(raw_records))
 
     transformed: List[Dict] = []
     ingested_at = datetime.now(timezone.utc).isoformat()
