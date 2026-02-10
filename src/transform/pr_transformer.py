@@ -55,7 +55,7 @@ def transform_prs(raw_records:List[Dict]) -> List[Dict]:
     logger.info("Transformed %s pull records", len(transformed))
     return transformed
 
-def enrich_pr_records(pr_records: List[Dict] -> List[Dict]):
+def enrich_pr_records(pr_records: List[Dict]) -> List[Dict]:
     """
     Enrich PR records with detailed pull request metadata.
     """
@@ -73,7 +73,11 @@ def enrich_pr_records(pr_records: List[Dict] -> List[Dict]):
                 pr_number,
                 e
             )
-            continue 
+            
+            pr["enrichment_failed"] = True
+            pr["enrichment_at"] = datetime.now(timezone.utc).isoformat()
+            enriched.append(pr)
+            continue
 
         pr.update({
             "merged": details.get("merged"),
