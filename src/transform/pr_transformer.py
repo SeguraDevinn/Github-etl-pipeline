@@ -30,6 +30,7 @@ def transform_prs(raw_records:List[Dict]) -> List[Dict]:
             "pr_id": record.get("id"),
             "pr_node_id": record.get("node_id"),
             "pr_number": record.get("number"),
+            "pr_api_url": record.get("pull_request", {}).get("url"),
             "title": record.get("title"),
             "author_login": record.get("user", {}).get("login"),
             "author_type": record.get("user", {}).get("type"),
@@ -40,8 +41,11 @@ def transform_prs(raw_records:List[Dict]) -> List[Dict]:
             "num_comments": record.get("comments"),
             "labels": [label.get("name") for label in record.get("labels", [])],
             "num_labels": len(record.get("labels", [])),
+            "pr_url": record.get("pull_request", {}).get("html_url"),
             "repo": f"{Config.REPO_OWNER}/{Config.REPO_NAME}",
-            "ingested_at": ingested_at
+            "ingested_at": ingested_at,
+            "is_pull_request": True,
+            "is_issue": False
         }
 
         transformed.append(pr)
