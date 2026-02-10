@@ -2,6 +2,8 @@ from typing import List, Dict
 from datetime import datetime, timezone
 from utils.logger import get_logger
 from utils.config import Config
+from extract.pr_details_client import fetch_pr_details
+
 
 logger = get_logger(__name__)
 
@@ -52,3 +54,44 @@ def transform_prs(raw_records:List[Dict]) -> List[Dict]:
     
     logger.info("Transformed %s pull records", len(transformed))
     return transformed
+
+def enrich_pr_records(pr_records: List[Dict] -> List[Dict]):
+    """
+    Enrich PR records with detailed pull request metadata.
+    """
+
+    enriched = []
+
+    for pr in pr_records:
+        pr_number = pr["pr_number"]
+
+        try:
+            details = fetch_pr_details(pr_number)
+        except Exception as e:
+            logger.error(
+                "Failed to enrich PR #%s: %s",
+                pr_number,
+                e
+            )
+            continue 
+
+        pr.update({
+            "merged": details.get("merged"),
+            "merged_at": details.get("merged_at"),
+            "additions": details.get("additions"),
+            "deletions": details.get("deletions"),
+            "changed_files": details.get("changed_files"),
+            "review_comments": details.get("review_comments"),
+            "base_branch": details.get("base", {}).get("ref"),
+            "head_branch": details.get("head", {}).get("ref"),
+            "enriched_at": datetime.now(timezone.utc).isoformat()
+        })
+
+        enriched.append(pr)
+
+    logger.info(
+        "Enriched %s PR records",
+        len(enriched)
+    )
+
+    return enriched
