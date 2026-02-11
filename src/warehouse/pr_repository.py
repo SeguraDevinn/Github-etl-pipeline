@@ -5,10 +5,10 @@ from utils.logger import get_logger
 logger = get_logger(__name__)
 
 INSERT_PR_SQL = """
-INSERT OR REPLACE INTO pull_requests (
+INSERT INTO pull_requests (
+    pr_number,
     pr_id,
     pr_node_id,
-    pr_number,
     title,
     author_login,
     author_type,
@@ -29,8 +29,32 @@ INSERT OR REPLACE INTO pull_requests (
     repo,
     ingested_at,
     enriched_at
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT(pr_number) DO UPDATE SET
+    pr_id=excluded.pr_id,
+    pr_node_id=excluded.pr_node_id,
+    title=excluded.title,
+    author_login=excluded.author_login,
+    author_type=excluded.author_type,
+    state=excluded.state,
+    created_at=excluded.created_at,
+    updated_at=excluded.updated_at,
+    closed_at=excluded.closed_at,
+    merged=excluded.merged,
+    merged_at=excluded.merged_at,
+    additions=excluded.additions,
+    deletions=excluded.deletions,
+    changed_files=excluded.changed_files,
+    review_comments=excluded.review_comments,
+    base_branch=excluded.base_branch,
+    head_branch=excluded.head_branch,
+    num_comments=excluded.num_comments,
+    num_labels=excluded.num_labels,
+    repo=excluded.repo,
+    ingested_at=excluded.ingested_at,
+    enriched_at=excluded.enriched_at;
 """
+
 
 def insert_pull_requests(pr_records : List[Dict]):
     logger.info("Inserting %s PR records into warehouse...", len(pr_records))
@@ -42,9 +66,9 @@ def insert_pull_requests(pr_records : List[Dict]):
         cursor.execute(
             INSERT_PR_SQL,
             (
+                pr.get("pr_number"),
                 pr.get("pr_id"),
                 pr.get("pr_node_id"),
-                pr.get("pr_number"),
                 pr.get("title"),
                 pr.get("author_login"),
                 pr.get("author_type"),
@@ -73,3 +97,18 @@ def insert_pull_requests(pr_records : List[Dict]):
     conn.close()
 
     logger.info("Insert complete.")
+
+def get_latest_updated_timestamp() -> str | None:
+    """
+    Returns the most recent updated_at timestamp from warehouse.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT MAX(updated_at) FROM pull_requests;")
+
+    result = cursor.fetchone()[0]
+
+    conn.close()
+
+    return result

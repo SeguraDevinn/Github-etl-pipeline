@@ -28,7 +28,7 @@ def _get_headers() -> Dict[str, str]:
 # API Call
 # -------------------------
 
-def fetch_issues(state: str = "all", max_pages=10) -> List[Dict]:
+def fetch_issues(state: str = "all", max_pages=10, since: str | None = None) -> List[Dict]:
     """
     Fetch all issues for a GitHub repository using pagination.
 
@@ -50,6 +50,15 @@ def fetch_issues(state: str = "all", max_pages=10) -> List[Dict]:
 
     url = f"{Config.GITHUB_API_BASE_URL}/repos/{Config.REPO_OWNER}/{Config.REPO_NAME}/issues"
 
+    params = {
+        "state": state,
+        "per_page": Config.PER_PAGE,
+        "page": page
+    }
+
+    if since:
+        params["since"] = since
+
     while True:
         
         if page > max_pages:
@@ -61,11 +70,7 @@ def fetch_issues(state: str = "all", max_pages=10) -> List[Dict]:
         response = requests.get(
             url,
             headers= _get_headers(),
-            params={
-                "state": state,
-                "per_page": Config.PER_PAGE,
-                "page": page
-            },
+            params= params,
             timeout=30
         )
 

@@ -1,8 +1,8 @@
 PR_TABLE_SQL = """
 CREATE TABLE IF NOT EXISTS pull_requests (
-    pr_id INTEGER PRIMARY KEY,
+    pr_number INTEGER PRIMARY KEY,
+    pr_id INTEGER,
     pr_node_id TEXT,
-    pr_number INTEGER UNIQUE,
     title TEXT,
     author_login TEXT,
     author_type TEXT,

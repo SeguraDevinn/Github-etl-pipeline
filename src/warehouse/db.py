@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+
 from utils.logger import get_logger
 from warehouse.schema import PR_TABLE_SQL
 
