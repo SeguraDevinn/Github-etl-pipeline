@@ -55,14 +55,18 @@ def transform_prs(raw_records:List[Dict]) -> List[Dict]:
     logger.info("Transformed %s pull records", len(transformed))
     return transformed
 
-def enrich_pr_records(pr_records: List[Dict]) -> List[Dict]:
+def enrich_pr_records(pr_records: List[Dict], max_enrich: int | None = None) -> List[Dict]:
     """
     Enrich PR records with detailed pull request metadata.
     """
 
     enriched = []
 
-    for pr in pr_records:
+    for i, pr in enumerate(pr_records):
+
+        if max_enrich is not None and i >= max_enrich:
+            logger.info("Temporary enrichment limit reached (%s PRs)", max_enrich)
+            break
         pr_number = pr["pr_number"]
 
         try:
