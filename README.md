@@ -18,7 +18,6 @@ The primary objectives of this project are:
 - Implement incremental loading using a watermark strategy.
 - Design a warehouse schema for pull request analytics.
 - Prevent duplicate records using upsert logic.
-- Prepare the pipeline for orchestration with Apache Airflow.
 - Establish a foundation for analytics and reporting.
 
 ---
@@ -144,29 +143,12 @@ The pipeline will:
 - Implemented safe upsert logic using conflict resolution.
 - Validated duplicate prevention using SQL tests.
 - Debugged live-update edge cases from the GitHub API.
-- Created a production-style pipeline entry point.
 - Structured execution logging and run summaries.
 
 The pipeline is stable and ready for orchestration.
 
 ---
 
-## Next Phase: Apache Airflow Integration
-
-The next step is to orchestrate this pipeline using Apache Airflow.
-
-Planned enhancements:
-
-- Convert pipeline steps into Airflow tasks.
-- Build a DAG with explicit task dependencies.
-- Schedule automated incremental runs.
-- Add retry and failure handling logic.
-- Record pipeline run metadata.
-- Monitor execution through the Airflow UI.
-
-This will transform the project from a standalone ETL script into a fully orchestrated data workflow.
-
----
 
 ## Future Improvements
 
@@ -186,7 +168,6 @@ This will transform the project from a standalone ETL script into a fully orches
 - GitHub REST API
 - Structured logging
 - Incremental ETL design patterns
-- Apache Airflow (planned)
 
 ---
 
