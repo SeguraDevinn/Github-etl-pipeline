@@ -29,9 +29,9 @@ def transform_prs(raw_records:List[Dict]) -> List[Dict]:
             continue
 
         pr = {
+            "pr_number": record.get("number"),
             "pr_id": record.get("id"),
             "pr_node_id": record.get("node_id"),
-            "pr_number": record.get("number"),
             "pr_api_url": record.get("pull_request", {}).get("url"),
             "title": record.get("title"),
             "author_login": record.get("user", {}).get("login"),
@@ -67,6 +67,8 @@ def enrich_pr_records(pr_records: List[Dict], max_enrich: int | None = None) -> 
         if max_enrich is not None and i >= max_enrich:
             logger.info("Temporary enrichment limit reached (%s PRs)", max_enrich)
             break
+
+
         pr_number = pr["pr_number"]
 
         try:

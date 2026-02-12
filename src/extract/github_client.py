@@ -59,6 +59,8 @@ def fetch_issues(state: str = "all", max_pages=10, since: str | None = None) -> 
     if since:
         params["since"] = since
 
+    print(params)
+    
     while True:
         
         if page > max_pages:
