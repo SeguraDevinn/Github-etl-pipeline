@@ -4,7 +4,7 @@
 
 This project is a modular ETL pipeline that extracts pull request data from the GitHub API, transforms and enriches it, validates the results, and loads the data into a SQLite warehouse.
 
-The purpose of this project is to simulate a production-style data engineering workflow. It focuses on incremental ingestion, safe upsert logic, clean warehouse modeling, and orchestration readiness. The next phase of the project is integrating the pipeline into Apache Airflow for scheduled and monitored execution.
+The purpose of this project is to simulate a production-style data engineering workflow. It focuses on incremental ingestion, safe upsert logic, clean warehouse modeling, and orchestration readiness. The next phase of this project is allowing the pipeline to collect data and then do analysis to find key insghts.
 
 This is not a simple script-based extractor. The architecture is structured to reflect real-world data pipeline design patterns.
 
